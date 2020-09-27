@@ -32,7 +32,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 seekBar ?: return
-                scaleTv.text = "Scale:${progress}/10"
+                if (selectedImg != null) {
+                    val img = selectedImg ?: return
+                    val scale = seekBar.progress.toFloat() / 10.toFloat()
+                    val maxSize = max(img.width, img.height)
+                    val reSize = (scale * maxSize).toInt()
+                    scaleTv.text = "Scale:${progress}/10, Size:$reSize"
+                } else {
+                    scaleTv.text = "Scale:${progress}/10"
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
