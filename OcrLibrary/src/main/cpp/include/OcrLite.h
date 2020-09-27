@@ -46,7 +46,7 @@ private:
 
     Angle getAngle(cv::Mat &src);
 
-    TextLine getTextLine(cv::Mat &partImg, int angleIndex);
+    TextLine getTextLine(cv::Mat &src, int angleIndex);
 
     TextLine scoreToString(ncnn::Mat &score);
 
@@ -63,7 +63,7 @@ private:
     const float normValsDBNet[3] = {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0};
 
     int angleDstWidth = 196;
-    int angleDstHeight = 48;
+    int angleDstHeight = 32;
     const float meanValsAngle[3] = {0.485 * 255, 0.456 * 255, 0.406 * 255};
     const float normValsAngle[3] = {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0};
 

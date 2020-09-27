@@ -191,14 +191,14 @@ ncnn::Extractor OcrLite::getExtractor(int angleIndex) {
     }
 }
 
-TextLine OcrLite::getTextLine(cv::Mat &partImg, int angleIndex) {
+TextLine OcrLite::getTextLine(cv::Mat &src, int angleIndex) {
     // 开始文本识别
-    float scale = (float) crnnDstHeight / (float) partImg.rows;
-    int dstWidth = int((float) partImg.cols * scale);
+    float scale = (float) crnnDstHeight / (float) src.rows;
+    int dstWidth = int((float) src.cols * scale);
 
     ncnn::Mat input = ncnn::Mat::from_pixels_resize(
-            partImg.data, ncnn::Mat::PIXEL_BGR2GRAY,
-            partImg.cols, partImg.rows, dstWidth, crnnDstHeight);
+            src.data, ncnn::Mat::PIXEL_BGR2GRAY,
+            src.cols, src.rows, dstWidth, crnnDstHeight);
 
     input.substract_mean_normalize(meanValsCrnn, normValsCrnn);
 
