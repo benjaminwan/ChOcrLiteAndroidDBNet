@@ -260,7 +260,7 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox) {
 
     std::string strRes;//存放结果
     for (int i = 0; i < textBoxes.size(); ++i) {
-        LOGI("-----TextBox[%d]-----", i);
+        LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
         long startTextLine = getCurrentTime();
         cv::Mat angleImg;//用于识别文字方向
         cv::RotatedRect rectAngle = getPartRectMinus(textBoxes[i].box, 0.2);//识别文字方向的范围可以小一些
