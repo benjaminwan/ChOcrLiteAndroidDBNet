@@ -39,8 +39,6 @@ public:
 
     std::string detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox);
 
-    std::string detectSameAngle(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox);
-
 private:
     std::vector<TextBox> getTextBoxes(cv::Mat &partImg, ScaleParam &s);
 
