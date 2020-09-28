@@ -40,7 +40,7 @@ public:
     std::string detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox);
 
 private:
-    std::vector<TextBox> getTextBoxes(cv::Mat &partImg, ScaleParam &s);
+    std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s);
 
     Angle getAngle(cv::Mat &src);
 

@@ -71,9 +71,9 @@ OcrLite::OcrLite(JNIEnv *env, jobject assetManager) {
     //LOGI("初始化完成!");
 }
 
-std::vector<TextBox> OcrLite::getTextBoxes(cv::Mat &partImg, ScaleParam &s) {
+std::vector<TextBox> OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s) {
     std::vector<TextBox> rsBoxes;
-    ncnn::Mat dbNetInput = ncnn::Mat::from_pixels_resize(partImg.data, ncnn::Mat::PIXEL_BGR2RGB,
+    ncnn::Mat dbNetInput = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_BGR2RGB,
                                                          s.srcWidth, s.srcHeight,
                                                          s.dstWidth, s.dstHeight);
 
