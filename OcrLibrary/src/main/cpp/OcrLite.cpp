@@ -73,47 +73,46 @@ OcrLite::OcrLite(JNIEnv *env, jobject assetManager) {
 
 std::vector<TextBox> OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s) {
     std::vector<TextBox> rsBoxes;
-    ncnn::Mat dbNetInput = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_BGR2RGB,
-                                                         s.srcWidth, s.srcHeight,
-                                                         s.dstWidth, s.dstHeight);
+    ncnn::Mat input = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_BGR2RGB,
+                                                    src.cols, src.rows,
+                                                    s.dstWidth, s.dstHeight);
 
-    dbNetInput.substract_mean_normalize(meanValsDBNet, normValsDBNet);
-    ncnn::Extractor dbNetEx = dbNet.create_extractor();
-    dbNetEx.set_num_threads(numThread);
-    dbNetEx.input("input0", dbNetInput);
-    ncnn::Mat dbNetOut;
-    dbNetEx.extract("out1", dbNetOut);
+    input.substract_mean_normalize(meanValsDBNet, normValsDBNet);
+    ncnn::Extractor extractor = dbNet.create_extractor();
+    extractor.set_num_threads(numThread);
+    extractor.input("input0", input);
+    ncnn::Mat out;
+    extractor.extract("out1", out);
 
-    cv::Mat fmapmat(s.dstHeight, s.dstWidth, CV_32FC1);
-    memcpy(fmapmat.data, (float *) dbNetOut.data, s.dstWidth * s.dstHeight * sizeof(float));
+    cv::Mat fMapMat(s.dstHeight, s.dstWidth, CV_32FC1);
+    memcpy(fMapMat.data, (float *) out.data, s.dstWidth * s.dstHeight * sizeof(float));
 
-    cv::Mat norfmapmat;
+    cv::Mat norfMapMat;
 
-    norfmapmat = fmapmat > thresh;
+    norfMapMat = fMapMat > thresh;
 
     rsBoxes.clear();
     std::vector<std::vector<cv::Point>> contours;
-    cv::findContours(norfmapmat, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
+    cv::findContours(norfMapMat, contours, cv::RETR_LIST, cv::CHAIN_APPROX_SIMPLE);
     for (int i = 0; i < contours.size(); ++i) {
         std::vector<cv::Point> minBox;
         float minEdgeSize, allEdgeSize;
         getMiniBoxes(contours[i], minBox, minEdgeSize, allEdgeSize);
 
-        if (minEdgeSize < minSize)
+        if (minEdgeSize < minArea)
             continue;
-        float score = boxScoreFast(fmapmat, contours[i]);
+        float score = boxScoreFast(fMapMat, contours[i]);
 
-        if (score < boxThresh)
+        if (score < boxScoreThresh)
             continue;
 
-
-        std::vector<cv::Point> newBox;
+        /*std::vector<cv::Point> newBox;
         unClip(minBox, allEdgeSize, newBox, unClipRatio);
 
         getMiniBoxes(newBox, minBox, minEdgeSize, allEdgeSize);
 
-        if (minEdgeSize < minSize + 2)
-            continue;
+        if (minEdgeSize < minArea + 2)
+            continue;*/
 
         for (int j = 0; j < minBox.size(); ++j) {
             minBox[j].x = (minBox[j].x / s.scaleWidth);
@@ -263,12 +262,12 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox) {
         LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
         long startTextLine = getCurrentTime();
         cv::Mat angleImg;//用于识别文字方向
-        cv::RotatedRect rectAngle = getPartRectMinus(textBoxes[i].box, 0.2);//识别文字方向的范围可以小一些
+        cv::RotatedRect rectAngle = getPartRectPlus(textBoxes[i].box, 1.3);//识别文字方向的范围可以小一些
         RRLib::getRotRectImg(rectAngle, src, angleImg);
         LOGI("rectAngle(%f, %f)", rectAngle.size.width, rectAngle.size.height);
 
         cv::Mat textImg;//用于识别文字
-        cv::RotatedRect rect = getPartRectPlus(textBoxes[i].box, 0.2);//识别文字的范围需要加大一些
+        cv::RotatedRect rect = getPartRectPlus(textBoxes[i].box, 1.6);//识别文字的范围需要加大一些
         RRLib::getRotRectImg(rect, src, textImg);
         LOGI("rect(%f, %f)", rect.size.width, rect.size.height);
 

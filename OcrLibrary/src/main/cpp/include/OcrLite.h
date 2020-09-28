@@ -54,9 +54,9 @@ private:
     int numThread = 4;
 
     const float unClipRatio = 1.5;
-    const float boxThresh = 0.5;
+    const float boxScoreThresh = 0.5;
     const float thresh = 0.3;
-    const int minSize = 3;
+    const float minArea = 3;
     const float meanValsDBNet[3] = {0.485 * 255, 0.456 * 255, 0.406 * 255};
     const float normValsDBNet[3] = {1.0 / 0.229 / 255.0, 1.0 / 0.224 / 255.0, 1.0 / 0.225 / 255.0};
 
