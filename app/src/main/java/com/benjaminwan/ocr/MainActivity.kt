@@ -32,15 +32,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 seekBar ?: return
-                if (selectedImg != null) {
-                    val img = selectedImg ?: return
-                    val scale = seekBar.progress.toFloat() / 10.toFloat()
-                    val maxSize = max(img.width, img.height)
-                    val reSize = (scale * maxSize).toInt()
-                    scaleTv.text = "Scale:${progress}/10, Size:$reSize"
-                } else {
-                    scaleTv.text = "Scale:${progress}/10"
-                }
+                updateScaleTv(progress)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -51,6 +43,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
             }
         })
+    }
+
+    fun updateScaleTv(progress: Int) {
+        if (selectedImg != null) {
+            val img = selectedImg ?: return
+            val scale = seekBar.progress.toFloat() / 10.toFloat()
+            val maxSize = max(img.width, img.height)
+            val reSize = (scale * maxSize).toInt()
+            scaleTv.text = "Scale:${progress}/10, Size:$reSize"
+        } else {
+            scaleTv.text = "Scale:${progress}/10"
+        }
     }
 
     override fun onClick(view: View?) {
@@ -112,6 +116,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
             Glide.with(this).load(imgUri).apply(options).into(imageView)
             selectedImg = decodeUri(imgUri)
+            updateScaleTv(seekBar.progress)
         }
     }
 
