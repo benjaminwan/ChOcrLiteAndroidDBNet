@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 )
                 Log.i(TAG, "selectedImg=${img.height},${img.width} ${img.config}")
                 val start = System.currentTimeMillis()
-                resultTV.text = ocrEngine.detectScale(img, scale, boxImg)
+                resultTV.text = ocrEngine.detect(img, boxImg, scale)
                 val end = System.currentTimeMillis()
                 val time = "time=${end - start}ms"
                 timeTV.text = time
@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 )
                 Log.i(TAG, "selectedImg=${img.height},${img.width} ${img.config}")
                 val start = System.currentTimeMillis()
-                resultTV.text = ocrEngine.detectResize(img, reSize, boxImg)
+                resultTV.text = ocrEngine.detect(img, boxImg, reSize)
                 val end = System.currentTimeMillis()
                 val time = "time=${end - start}ms"
                 timeTV.text = time

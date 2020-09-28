@@ -11,7 +11,24 @@ class OcrEngine(context: Context) {
         if (!ret) throw IllegalArgumentException()
     }
 
+    var boxScoreThresh: Float = 0.5f
+    var boxThread: Float = 0.3f
+    var miniArea: Float = 3f
+
+    fun detect(input: Bitmap, output: Bitmap, reSize: Int) =
+        detectResize(input, output, reSize, boxScoreThresh, boxThread, miniArea)
+
+    fun detect(input: Bitmap, output: Bitmap, scale: Float) =
+        detectScale(input, output, scale, boxScoreThresh, boxThread, miniArea)
+
     external fun init(assetManager: AssetManager): Boolean
-    external fun detectResize(input: Bitmap, reSize: Int, output: Bitmap): String
-    external fun detectScale(input: Bitmap, scale: Float, output: Bitmap): String
+    external fun detectResize(
+        input: Bitmap, output: Bitmap, reSize: Int,
+        boxScoreThread: Float, boxThread: Float, miniArea: Float
+    ): String
+
+    external fun detectScale(
+        input: Bitmap, output: Bitmap, scale: Float,
+        boxScoreThread: Float, boxThread: Float, miniArea: Float
+    ): String
 }

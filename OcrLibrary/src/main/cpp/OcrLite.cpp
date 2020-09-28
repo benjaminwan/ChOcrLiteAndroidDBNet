@@ -71,7 +71,9 @@ OcrLite::OcrLite(JNIEnv *env, jobject assetManager) {
     //LOGI("初始化完成!");
 }
 
-std::vector<TextBox> OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s) {
+std::vector<TextBox>
+OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s,
+                      float boxScoreThresh, float boxThresh, float minArea) {
     std::vector<TextBox> rsBoxes;
     ncnn::Mat input = ncnn::Mat::from_pixels_resize(src.data, ncnn::Mat::PIXEL_BGR2RGB,
                                                     src.cols, src.rows,
@@ -89,7 +91,7 @@ std::vector<TextBox> OcrLite::getTextBoxes(cv::Mat &src, ScaleParam &s) {
 
     cv::Mat norfMapMat;
 
-    norfMapMat = fMapMat > thresh;
+    norfMapMat = fMapMat > boxThresh;
 
     rsBoxes.clear();
     std::vector<std::vector<cv::Point>> contours;
@@ -245,14 +247,15 @@ TextLine OcrLite::getTextLine(cv::Mat &src, int angleIndex) {
     return scoreToString(blob263);
 }
 
-std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox) {
+std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
+                            float boxScoreThresh, float boxThresh, float minArea) {
     //图像文字分割
     LOGI("=====Start detect=====");
     LOGI("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
          scale.dstWidth, scale.dstHeight,
          scale.scaleWidth, scale.scaleHeight);
     long startTime = getCurrentTime();
-    std::vector<TextBox> textBoxes = getTextBoxes(src, scale);
+    std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea);
     LOGI("TextBoxes Size = %ld", textBoxes.size());
     long endTimeTextBoxes = getCurrentTime();
     printTime("Time getTextBoxes", startTime, endTimeTextBoxes);
