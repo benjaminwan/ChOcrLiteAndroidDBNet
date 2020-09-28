@@ -1,4 +1,4 @@
-package com.benjaminwan.ocr
+package com.benjaminwan.ocr.dbnet
 
 import android.content.Context
 import android.graphics.Bitmap
