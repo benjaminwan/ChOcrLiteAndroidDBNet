@@ -11,17 +11,17 @@ class OcrEngine(context: Context) {
         if (!ret) throw IllegalArgumentException()
     }
 
-    var boxScoreThresh: Float = 0.5f
-    var boxThread: Float = 0.3f
+    var boxScoreThresh: Float = 0.6f
+    var boxThresh: Float = 0.3f
     var miniArea: Float = 3f
 
     fun detect(input: Bitmap, output: Bitmap, reSize: Int) =
-        detect(input, output, reSize, boxScoreThresh, boxThread, miniArea)
+        detect(input, output, reSize, boxScoreThresh, boxThresh, miniArea)
 
     external fun init(assetManager: AssetManager): Boolean
     external fun detect(
         input: Bitmap, output: Bitmap, reSize: Int,
-        boxScoreThread: Float, boxThread: Float, miniArea: Float
+        boxScoreThresh: Float, boxThresh: Float, miniArea: Float
     ): String
 
 }

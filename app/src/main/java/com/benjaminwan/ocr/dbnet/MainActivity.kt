@@ -16,7 +16,7 @@ import com.bumptech.glide.request.RequestOptions
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.max
 
-class MainActivity : AppCompatActivity(), View.OnClickListener {
+class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private lateinit var ocrEngine: OcrEngine
     private var selectedImg: Bitmap? = null
@@ -28,32 +28,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         resultTV.movementMethod = ScrollingMovementMethod.getInstance()
         selectBtn.setOnClickListener(this)
         detectBtn.setOnClickListener(this)
-        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                seekBar ?: return
-                updateScaleTv(progress)
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
-            }
-        })
-    }
-
-    fun updateScaleTv(progress: Int) {
-        if (selectedImg != null) {
-            val img = selectedImg ?: return
-            val scale = seekBar.progress.toFloat() / 100.toFloat()
-            val maxSize = max(img.width, img.height)
-            val reSize = (scale * maxSize).toInt()
-            scaleTv.text = "Scale:${progress}/100, Size:$reSize"
-        } else {
-            scaleTv.text = "Scale:${progress}/100"
-        }
+        boxScoreThreshSeekBar.setOnSeekBarChangeListener(this)
+        boxThreshSeekBar.setOnSeekBarChangeListener(this)
+        minAreaSeekBar.setOnSeekBarChangeListener(this)
+        scaleSeekBar.setOnSeekBarChangeListener(this)
     }
 
     override fun onClick(view: View?) {
@@ -69,7 +47,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             }
             R.id.detectBtn -> {
                 val img = selectedImg ?: return
-                val scale = seekBar.progress.toFloat() / 100.toFloat()
+                val scale = scaleSeekBar.progress.toFloat() / 100.toFloat()
                 val maxSize = max(img.width, img.height)
                 val reSize = (scale * maxSize).toInt()
                 val boxImg: Bitmap = Bitmap.createBitmap(
@@ -90,6 +68,63 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+        seekBar ?: return
+        when (seekBar.id) {
+            R.id.scaleSeekBar -> {
+                updateScale(progress)
+            }
+            R.id.boxScoreThreshSeekBar -> {
+                updateBoxScoreThresh(progress)
+            }
+            R.id.boxThreshSeekBar -> {
+                updateBoxThresh(progress)
+            }
+            R.id.minAreaSeekBar -> {
+                updateMinArea(progress)
+            }
+            else -> {
+            }
+        }
+    }
+
+    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+    }
+
+    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+
+    }
+
+    private fun updateScale(progress: Int) {
+        val scale = progress.toFloat() / 100.toFloat()
+        if (selectedImg != null) {
+            val img = selectedImg ?: return
+            val maxSize = max(img.width, img.height)
+            val reSize = (scale * maxSize).toInt()
+            scaleTv.text = "Size:$reSize(${scale * 100}%)"
+        } else {
+            scaleTv.text = "Size:0(${scale * 100}%)"
+        }
+    }
+
+    private fun updateBoxScoreThresh(progress: Int) {
+        val thresh = progress.toFloat() / 100.toFloat()
+        boxScoreThreshTv.text = "BoxScoreThresh:$thresh"
+        ocrEngine.boxScoreThresh = thresh
+    }
+
+    private fun updateBoxThresh(progress: Int) {
+        val thresh = progress.toFloat() / 100.toFloat()
+        boxThreshTv.text = "BoxThresh:$thresh"
+        ocrEngine.boxThresh = thresh
+    }
+
+    private fun updateMinArea(progress: Int) {
+        minAreaTv.text = "MinArea:$progress"
+        ocrEngine.miniArea = progress.toFloat()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data ?: return
@@ -99,7 +134,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
             Glide.with(this).load(imgUri).apply(options).into(imageView)
             selectedImg = decodeUri(imgUri)
-            updateScaleTv(seekBar.progress)
+            updateScale(scaleSeekBar.progress)
         }
     }
 
@@ -107,5 +142,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         const val REQUEST_SELECT_IMAGE = 666
         const val TAG = "OcrLite"
     }
+
 
 }
