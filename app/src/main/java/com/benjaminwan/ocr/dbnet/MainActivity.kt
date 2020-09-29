@@ -13,6 +13,10 @@ import com.benjaminwan.ocrlibrary.OcrEngine
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.uber.autodispose.android.lifecycle.autoDisposable
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlin.math.max
 
@@ -54,7 +58,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
                 val scale = scaleSeekBar.progress.toFloat() / 100.toFloat()
                 val maxSize = max(img.width, img.height)
                 val reSize = (scale * maxSize).toInt()
-                val boxImg: Bitmap = Bitmap.createBitmap(
+                detect(img, reSize)
+                /*val boxImg: Bitmap = Bitmap.createBitmap(
                     img.width, img.height, Bitmap.Config.ARGB_8888
                 )
                 Log.i(TAG, "selectedImg=${img.height},${img.width} ${img.config}")
@@ -65,7 +70,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
                 timeTV.text = time
                 val options =
                     RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
-                Glide.with(this).load(boxImg).apply(options).into(imageView)
+                Glide.with(this).load(boxImg).apply(options).into(imageView)*/
             }
             else -> {
             }
@@ -105,11 +110,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
     }
 
     override fun onStopTrackingTouch(seekBar: SeekBar?) {
-
     }
 
     private fun updateScale(progress: Int) {
@@ -175,7 +178,42 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
             Glide.with(this).load(imgUri).apply(options).into(imageView)
             selectedImg = decodeUri(imgUri)
             updateScale(scaleSeekBar.progress)
+            clearLastResult()
         }
+    }
+
+    private fun showLoading() {
+        Glide.with(this).load(R.drawable.loading_anim).into(imageView)
+    }
+
+    private fun clearLastResult() {
+        resultTV.text = ""
+        timeTV.text = ""
+    }
+
+    private fun detect(img: Bitmap, reSize: Int) {
+        Single.fromCallable {
+            val boxImg: Bitmap = Bitmap.createBitmap(
+                img.width, img.height, Bitmap.Config.ARGB_8888
+            )
+            Log.i(TAG, "selectedImg=${img.height},${img.width} ${img.config}")
+            val start = System.currentTimeMillis()
+            val text = ocrEngine.detect(img, boxImg, reSize)
+            val end = System.currentTimeMillis()
+            val time = "time=${end - start}ms"
+            OcrResult(boxImg, text, time)
+        }.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { showLoading() }
+            .doFinally { /*hideLoading()*/ }
+            .autoDisposable(this)
+            .subscribe { t1, t2 ->
+                timeTV.text = t1.time
+                resultTV.text = t1.text
+                val options =
+                    RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
+                Glide.with(this).load(t1.bitmap).apply(options).into(imageView)
+            }
     }
 
     companion object {
