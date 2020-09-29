@@ -27,8 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         ocrEngine = OcrEngine(applicationContext)
         resultTV.movementMethod = ScrollingMovementMethod.getInstance()
         selectBtn.setOnClickListener(this)
-        detectScaleBtn.setOnClickListener(this)
-        detectResizeBtn.setOnClickListener(this)
+        detectBtn.setOnClickListener(this)
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 seekBar ?: return
@@ -48,12 +47,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     fun updateScaleTv(progress: Int) {
         if (selectedImg != null) {
             val img = selectedImg ?: return
-            val scale = seekBar.progress.toFloat() / 10.toFloat()
+            val scale = seekBar.progress.toFloat() / 100.toFloat()
             val maxSize = max(img.width, img.height)
             val reSize = (scale * maxSize).toInt()
-            scaleTv.text = "Scale:${progress}/10, Size:$reSize"
+            scaleTv.text = "Scale:${progress}/100, Size:$reSize"
         } else {
-            scaleTv.text = "Scale:${progress}/10"
+            scaleTv.text = "Scale:${progress}/100"
         }
     }
 
@@ -68,25 +67,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     intent, REQUEST_SELECT_IMAGE
                 )
             }
-            R.id.detectScaleBtn -> {
+            R.id.detectBtn -> {
                 val img = selectedImg ?: return
-                val scale = seekBar.progress.toFloat() / 10.toFloat()
-                val boxImg: Bitmap = Bitmap.createBitmap(
-                    img.width, img.height, Bitmap.Config.ARGB_8888
-                )
-                Log.i(TAG, "selectedImg=${img.height},${img.width} ${img.config}")
-                val start = System.currentTimeMillis()
-                resultTV.text = ocrEngine.detect(img, boxImg, scale)
-                val end = System.currentTimeMillis()
-                val time = "time=${end - start}ms"
-                timeTV.text = time
-                val options =
-                    RequestOptions().skipMemoryCache(true).diskCacheStrategy(DiskCacheStrategy.NONE)
-                Glide.with(this).load(boxImg).apply(options).into(imageView)
-            }
-            R.id.detectResizeBtn -> {
-                val img = selectedImg ?: return
-                val scale = seekBar.progress.toFloat() / 10.toFloat()
+                val scale = seekBar.progress.toFloat() / 100.toFloat()
                 val maxSize = max(img.width, img.height)
                 val reSize = (scale * maxSize).toInt()
                 val boxImg: Bitmap = Bitmap.createBitmap(

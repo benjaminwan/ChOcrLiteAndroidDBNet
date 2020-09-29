@@ -16,19 +16,12 @@ class OcrEngine(context: Context) {
     var miniArea: Float = 3f
 
     fun detect(input: Bitmap, output: Bitmap, reSize: Int) =
-        detectResize(input, output, reSize, boxScoreThresh, boxThread, miniArea)
-
-    fun detect(input: Bitmap, output: Bitmap, scale: Float) =
-        detectScale(input, output, scale, boxScoreThresh, boxThread, miniArea)
+        detect(input, output, reSize, boxScoreThresh, boxThread, miniArea)
 
     external fun init(assetManager: AssetManager): Boolean
-    external fun detectResize(
+    external fun detect(
         input: Bitmap, output: Bitmap, reSize: Int,
         boxScoreThread: Float, boxThread: Float, miniArea: Float
     ): String
 
-    external fun detectScale(
-        input: Bitmap, output: Bitmap, scale: Float,
-        boxScoreThread: Float, boxThread: Float, miniArea: Float
-    ): String
 }

@@ -39,15 +39,15 @@
             android:id="@+id/scaleTv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scale:6/10" />
+            android:text="Scale:60/100" />
 
         <SeekBar
             android:id="@+id/seekBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:max="10"
-            android:min="1"
-            android:progress="6" />
+            android:max="100"
+            android:min="10"
+            android:progress="60" />
 
     </LinearLayout>
 
@@ -67,19 +67,11 @@
             android:textSize="12sp" />
 
         <Button
-            android:id="@+id/detectScaleBtn"
+            android:id="@+id/detectBtn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="detect Scale"
-            android:textSize="12sp" />
-
-        <Button
-            android:id="@+id/detectResizeBtn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="detect Resize"
+            android:text="detect"
             android:textSize="12sp" />
     </LinearLayout>
 
