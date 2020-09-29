@@ -37,9 +37,10 @@ class OcrLite {
 public:
     OcrLite(JNIEnv *env, jobject assetManager);
 
-    std::string
-    detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
-           float boxScoreThresh, float boxThresh, float minArea);
+    std::string detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
+                                float boxScoreThresh, float boxThresh, float minArea,
+                                float angleScaleWidth, float angleScaleHeight,
+                                float textScaleWidth, float textScaleHeight);
 
 private:
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s,

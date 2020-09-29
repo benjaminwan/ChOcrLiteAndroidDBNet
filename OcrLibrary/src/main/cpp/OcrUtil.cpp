@@ -49,6 +49,19 @@ ScaleParam getScaleParam(cv::Mat &src, const int targetSize) {
     return {srcWidth, srcHeight, dstWidth, dstHeight, scaleWidth, scaleHeight};
 }
 
+cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight) {
+    cv::RotatedRect rect = cv::minAreaRect(box);
+    int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
+    if (rect.size.width > rect.size.height) {
+        rect.size.width = rect.size.width + (float) minSize * scaleWidth;
+        rect.size.height = rect.size.height + (float) minSize * scaleHeight;
+    } else {
+        rect.size.width = rect.size.width + (float) minSize * scaleHeight;
+        rect.size.height = rect.size.height + (float) minSize * scaleWidth;
+    }
+    return rect;
+}
+
 cv::RotatedRect getPartRectPlus(std::vector<cv::Point> &box, float scale) {
     cv::RotatedRect rect = cv::minAreaRect(box);
     int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;

@@ -29,9 +29,7 @@ ScaleParam getScaleParam(cv::Mat &src, const float scale);
 
 ScaleParam getScaleParam(cv::Mat &src, const int targetSize);
 
-cv::RotatedRect getPartRectPlus(std::vector<cv::Point> &box, float scale);
-
-cv::RotatedRect getPartRectMinus(std::vector<cv::Point> &box, float scale);
+cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float scaleHeight);
 
 void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect);
 

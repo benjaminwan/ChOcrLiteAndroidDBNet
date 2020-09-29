@@ -248,7 +248,9 @@ TextLine OcrLite::getTextLine(cv::Mat &src, int angleIndex) {
 }
 
 std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
-                            float boxScoreThresh, float boxThresh, float minArea) {
+                            float boxScoreThresh, float boxThresh, float minArea,
+                            float angleScaleWidth, float angleScaleHeight,
+                            float textScaleWidth, float textScaleHeight) {
     //图像文字分割
     LOGI("=====Start detect=====");
     LOGI("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
@@ -265,17 +267,19 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
         LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
         long startTextLine = getCurrentTime();
         cv::Mat angleImg;//用于识别文字方向
-        cv::RotatedRect rectAngle = getPartRectPlus(textBoxes[i].box, 1.3);//识别文字方向的范围可以小一些
+        cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
+                                                angleScaleHeight);//识别文字方向的范围可以小一些
         RRLib::getRotRectImg(rectAngle, src, angleImg);
         LOGI("rectAngle(%f, %f)", rectAngle.size.width, rectAngle.size.height);
 
         cv::Mat textImg;//用于识别文字
-        cv::RotatedRect rect = getPartRectPlus(textBoxes[i].box, 1.6);//识别文字的范围需要加大一些
-        RRLib::getRotRectImg(rect, src, textImg);
-        LOGI("rect(%f, %f)", rect.size.width, rect.size.height);
+        cv::RotatedRect rectText = getPartRect(textBoxes[i].box, textScaleWidth,
+                                               textScaleHeight);//识别文字的范围需要加大一些
+        RRLib::getRotRectImg(rectText, src, textImg);
+        LOGI("rectText(%f, %f)", rectText.size.width, rectText.size.height);
 
         //文字框
-        drawTextBox(imgBox, rect);
+        drawTextBox(imgBox, rectText);
         for (int p = 0; p < 4; ++p) {
             LOGI("Pt%d(x: %d, y: %d)", p, textBoxes[i].box[p].x, textBoxes[i].box[p].y);
         }

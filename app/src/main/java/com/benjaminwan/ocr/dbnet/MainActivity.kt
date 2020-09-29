@@ -32,6 +32,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
         boxThreshSeekBar.setOnSeekBarChangeListener(this)
         minAreaSeekBar.setOnSeekBarChangeListener(this)
         scaleSeekBar.setOnSeekBarChangeListener(this)
+        angleWidthSeekBar.setOnSeekBarChangeListener(this)
+        angleHeightSeekBar.setOnSeekBarChangeListener(this)
+        textWidthSeekBar.setOnSeekBarChangeListener(this)
+        textHeightSeekBar.setOnSeekBarChangeListener(this)
     }
 
     override fun onClick(view: View?) {
@@ -83,6 +87,18 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
             R.id.minAreaSeekBar -> {
                 updateMinArea(progress)
             }
+            R.id.angleWidthSeekBar -> {
+                updateAngleWidth(progress)
+            }
+            R.id.angleHeightSeekBar -> {
+                updateAngleHeight(progress)
+            }
+            R.id.textWidthSeekBar -> {
+                updateTextWidth(progress)
+            }
+            R.id.textHeightSeekBar -> {
+                updateTextHeight(progress)
+            }
             else -> {
             }
         }
@@ -123,6 +139,30 @@ class MainActivity : AppCompatActivity(), View.OnClickListener, SeekBar.OnSeekBa
     private fun updateMinArea(progress: Int) {
         minAreaTv.text = "MinArea:$progress"
         ocrEngine.miniArea = progress.toFloat()
+    }
+
+    private fun updateAngleWidth(progress: Int) {
+        val scale = progress.toFloat() / 10.toFloat()
+        angleWidthTv.text = "AngleWidth:$scale"
+        ocrEngine.angleScaleWidth = scale
+    }
+
+    private fun updateAngleHeight(progress: Int) {
+        val scale = progress.toFloat() / 10.toFloat()
+        angleHeightTv.text = "AngleHeight:$scale"
+        ocrEngine.angleScaleHeight = scale
+    }
+
+    private fun updateTextWidth(progress: Int) {
+        val scale = progress.toFloat() / 10.toFloat()
+        textWidthTv.text = "TextWidth:$scale"
+        ocrEngine.textScaleWidth = scale
+    }
+
+    private fun updateTextHeight(progress: Int) {
+        val scale = progress.toFloat() / 10.toFloat()
+        textHeightTv.text = "TextHeight:$scale"
+        ocrEngine.textScaleHeight = scale
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
