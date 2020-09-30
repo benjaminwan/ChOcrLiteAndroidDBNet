@@ -1,7 +1,10 @@
 # ChOcrLiteAndroidDBNet
 
+#### APK下载
+[Gitee下载](https://gitee.com/benjaminwan/ch-ocr-lite-android-dbnet/releases)
+
 #### 介绍
-chineseocr lite android dbnet 
+chineseocr lite android dbnet，超轻量级中文ocr android demo，支持竖排文字识别, 支持ncnn推理 ( dbnet+crnn+anglenet)
 
 **代码和模型均源自chineseocr lite**
 详情请查看 [https://github.com/ouyanghuiyu/chineseocr_lite](https://github.com/ouyanghuiyu/chineseocr_lite)
