@@ -62,29 +62,6 @@ cv::RotatedRect getPartRect(std::vector<cv::Point> &box, float scaleWidth, float
     return rect;
 }
 
-cv::RotatedRect getPartRectPlus(std::vector<cv::Point> &box, float scale) {
-    cv::RotatedRect rect = cv::minAreaRect(box);
-    int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
-    rect.size.width = rect.size.width + (float) minSize * scale;
-    rect.size.height = rect.size.height + (float) minSize * scale;
-    return rect;
-}
-
-cv::RotatedRect getPartRectMinus(std::vector<cv::Point> &box, float scale) {
-    cv::RotatedRect rect = cv::minAreaRect(box);
-    int minSize = rect.size.width > rect.size.height ? rect.size.height : rect.size.width;
-    //rect.size.width = rect.size.width - (float) minSize * scale;
-    //rect.size.height = rect.size.height - (float) minSize * scale;
-    if (rect.size.width > rect.size.height) {
-        rect.size.width = rect.size.width - (float) minSize * (scale + 0.1);
-        rect.size.height = rect.size.height - (float) minSize * (scale - 0.1);
-    } else {
-        rect.size.width = rect.size.width - (float) minSize * (scale - 0.1);
-        rect.size.height = rect.size.height - (float) minSize * (scale + 0.1);
-    }
-    return rect;
-}
-
 void drawTextBox(cv::Mat &boxImg, cv::RotatedRect &rect) {
     cv::Point2f vertices[4];      //定义4个点的数组
     rect.points(vertices);   //将四个点存储到vertices数组中
