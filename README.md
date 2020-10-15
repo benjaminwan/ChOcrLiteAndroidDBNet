@@ -13,7 +13,7 @@ chineseocr lite Android DBNet Demo，超轻量级中文OCR Android Demo，支持
 采用ncnn神经网络前向计算框架[https://github.com/Tencent/ncnn](https://github.com/Tencent/ncnn)
 
 整合了如下算法：
-dbnet(图像分割)+shufflenet(文字方向检测)+crnn-lstm(文字识别)
+DBNet(图像分割)+AngleNet(文字方向检测)+CRNN-LSTM(文字识别)
 
 #### 说明
 1. 封装为独立的Library。
@@ -23,11 +23,11 @@ dbnet(图像分割)+shufflenet(文字方向检测)+crnn-lstm(文字识别)
 5. 内置的opencv动态库版本opencv-3.4.10-android-sdk.zip
 
 #### 编译说明
-1.  AndroidStudio 4.0或以上
+1.  AndroidStudio 4.0.2或以上
 2.  NDK
 3.  cmake 3.4.1或以上
 
-#### psenet版本
+#### PseNet版本
 [ChOcrLiteAndroidPseNet](https://github.com/benjaminwan/ChOcrLiteAndroidPseNet)
 
 #### onnx版本
