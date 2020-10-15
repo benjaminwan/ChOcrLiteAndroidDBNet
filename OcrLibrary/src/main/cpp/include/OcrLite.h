@@ -7,40 +7,14 @@
 
 using namespace std;
 
-struct TextBox {
-    std::vector<cv::Point> box;
-    float score;
-
-    TextBox(std::vector<cv::Point> box,
-            float score) : box(box), score(score) {};
-};
-
-struct Angle {
-    int index;
-    float score;
-
-    Angle(int index,
-          float score
-    ) : index(index),
-        score(score) {};
-};
-
-struct TextLine {
-    std::string line;
-    std::vector<float> scores;
-
-    TextLine(std::string line,
-             std::vector<float> scores) : line(line), scores(scores) {};
-};
-
 class OcrLite {
 public:
     OcrLite(JNIEnv *env, jobject assetManager);
 
     std::string detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
-                                float boxScoreThresh, float boxThresh, float minArea,
-                                float angleScaleWidth, float angleScaleHeight,
-                                float textScaleWidth, float textScaleHeight);
+                       float boxScoreThresh, float boxThresh, float minArea,
+                       float angleScaleWidth, float angleScaleHeight,
+                       float textScaleWidth, float textScaleHeight);
 
 private:
     std::vector<TextBox> getTextBoxes(cv::Mat &src, ScaleParam &s,
