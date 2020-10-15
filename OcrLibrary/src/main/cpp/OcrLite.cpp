@@ -1,7 +1,7 @@
 #include <android/asset_manager.h>
 #include <android/asset_manager_jni.h>
 #include "OcrLite.h"
-#include "Logger.h"
+#include "LogUtils.h"
 #include "RRLib.h"
 #include <iosfwd>
 
@@ -243,6 +243,7 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
                             float boxScoreThresh, float boxThresh, float minArea,
                             float angleScaleWidth, float angleScaleHeight,
                             float textScaleWidth, float textScaleHeight) {
+
     //文字框 线宽
     int thickness = getThickness(src);
     //图像文字分割
@@ -250,16 +251,16 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
     LOGI("ScaleParam(sw:%d,sh:%d,dw:%d,dH%d,%f,%f)", scale.srcWidth, scale.srcHeight,
          scale.dstWidth, scale.dstHeight,
          scale.scaleWidth, scale.scaleHeight);
-    long startTime = getCurrentTime();
+    double startTime = getCurrentTime();
     std::vector<TextBox> textBoxes = getTextBoxes(src, scale, boxScoreThresh, boxThresh, minArea);
-    LOGI("TextBoxes Size = %ld", textBoxes.size());
-    long endTimeTextBoxes = getCurrentTime();
+    LOGI("TextBoxes Size = %d", textBoxes.size());
+    double endTimeTextBoxes = getCurrentTime();
     printTime("Time getTextBoxes", startTime, endTimeTextBoxes);
 
     std::string strRes;//存放结果
     for (int i = 0; i < textBoxes.size(); ++i) {
         LOGI("-----TextBox[%d] score(%f)-----", i, textBoxes[i].score);
-        long startTextLine = getCurrentTime();
+        double startTextLine = getCurrentTime();
         cv::Mat angleImg;//用于识别文字方向
         cv::RotatedRect rectAngle = getPartRect(textBoxes[i].box, angleScaleWidth,
                                                 angleScaleHeight);//识别文字方向的范围可以小一些
@@ -297,10 +298,10 @@ std::string OcrLite::detect(cv::Mat &src, ScaleParam &scale, cv::Mat &imgBox,
         LOGI("text(line=%s, scores={%s})", textLine.line.c_str(), string(txtScores.str()).c_str());
         strRes.append(textLine.line);
         strRes.append("\n");
-        long endTextLine = getCurrentTime();
+        double endTextLine = getCurrentTime();
         printTime("Time TextLine", startTextLine, endTextLine);
     }
-    long endTime = getCurrentTime();
+    double endTime = getCurrentTime();
     printTime("Time Full", startTime, endTime);
     LOGI("=====End detect=====");
     return strRes;
