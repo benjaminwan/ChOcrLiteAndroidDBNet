@@ -50,7 +50,7 @@ private:
 
     TextLine getTextLine(cv::Mat &src, int angleIndex);
 
-    TextLine scoreToString(ncnn::Mat &score);
+    TextLine scoreToTextLine(ncnn::Mat &score);
 
     ncnn::Extractor getExtractor(int angleIndex);
 
