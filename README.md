@@ -27,10 +27,10 @@ DBNet(图像分割)+AngleNet(文字方向检测)+CRNN-LSTM(文字识别)
 2.  NDK
 3.  cmake 3.4.1或以上
 
-#### PseNet版本
+#### master分支PseNet版本
 [ChOcrLiteAndroidPseNet](https://github.com/benjaminwan/ChOcrLiteAndroidPseNet)
 
-#### onnx版本
+#### onnx分支版本
 [ChOcrLiteAndroidOnnx](https://github.com/benjaminwan/ChOcrLiteAndroidOnnx)
 
 #### Android各版本区别(仅供参考)
