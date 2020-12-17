@@ -1,3 +1,4 @@
+# 此版本已停止维护，新版请转到[onnx分支版本@gitee](https://gitee.com/benjaminwan/ch-ocr-lite-android-onnx-to-ncnn)，或者[onnx分支版本@github](https://github.com/benjaminwan/ChOcrLiteAndroidOnnxToNcnn)
 # ChOcrLiteAndroidDBNet
 
 #### APK下载
